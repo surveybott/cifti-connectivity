@@ -176,6 +176,7 @@ end
 % outputs
 out.cifti = cifti;
 out.scrub = scrubTs;
+out.fd = fd
 out.vols = vols;
 out.conn = conn;
 out.idx = idx;
