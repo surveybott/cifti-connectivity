@@ -1,4 +1,5 @@
 # cifti-connectivity
+Denoising, parcellation, connectivity matrices and gradient mapping on CIFTI data (currently cortex only) from fmriprep
 
 ## Setup
 The follwing dependencies (properly installed and added to the MATLAB path) are required:
