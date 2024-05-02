@@ -1,4 +1,9 @@
-% GROUP_PIPELINE - finds functional cifti data (in BIDS format/directory) and runs `individual_gradient.m` on each subject
+% GROUP_PIPELINE - finds functional cifti and confound data (assumed fmriprep derivatives) and runs `individual_gradient.m` on each subject
+%       Denoising options:
+%           - Voxel-wise regression (`confounds` parameter list corresponds to header of *_confounds.tsv fmriprep file
+%               - setting `icaAroma`=true will automatically add noise components to the above regression
+%           - `bandpass` filtering 
+%           - `scrubThresh` and `scrubBefore`/`scrubAfter` to excise high motion volumes based on framewise displacement (fd)
 %
 % Requires the following packages to be downloaded and added to the MATLAB path:
 %   - BrainSpace:     https://brainspace.readthedocs.io/en/latest/
