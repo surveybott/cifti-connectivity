@@ -5,8 +5,11 @@ Denoising, parcellation, connectivity matrices and gradient mapping on CIFTI dat
 The follwing dependencies (properly installed and added to the MATLAB path) are required:
 - cifti-matlab: [GitHub](https://github.com/Washington-University/cifti-matlab)
 - BrainSpace: [docs](https://brainspace.readthedocs.io/en/latest/pages/install.html#matlab-installation), [download](https://github.com/MICA-MNI/BrainSpace/releases)
+
+After pull/download of this repository, `addpath('<CIFTI-CONNECTIVITY-DIRECTORY>')` in MATLAB
+
 ### Parcellations
-Parcellation is handled by BrainSpace. Additional parcellation definitions (e.g. the [Schaefer 1000](https://github.com/ThomasYeoLab/CBIG/tree/master/stable_projects/brain_parcellation/Schaefer2018_LocalGlobal)) are included here in the [parcellations](parcellations/) folder and need to be copied into `<BRAINSPACE_DIRECTORY>/shared/parcellations` prior to use
+Parcellation is handled by BrainSpace. Additional parcellation definitions (e.g. the [Schaefer 1000](https://github.com/ThomasYeoLab/CBIG/tree/master/stable_projects/brain_parcellation/Schaefer2018_LocalGlobal)) are included here in the [parcellations](parcellations/) folder and need to be copied into `<BRAINSPACE-DIRECTORY>/shared/parcellations` prior to use
 
 **Warning**: The Schaefer 1000 parcellation actually has **998** definied parcels (no 533 or 903). Check outputs and indices carefully, especially when mapping back onto the brain (fsLR/conte69 32k)
 
