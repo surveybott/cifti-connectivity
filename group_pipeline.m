@@ -28,7 +28,7 @@ p.addParameter('confounds',{'a_comp_cor_00', 'a_comp_cor_01','a_comp_cor_02','a_
     'rot_x','rot_y','rot_z','trans_x','trans_y','trans_z', 'framewise_displacement'},@iscellstr);
 p.addParameter('icaAroma',true);
 p.addParameter('bandpass',[0.008 0.1],@(x) isnumeric(x) && numel(x)==2);
-p.addParameter('scrubThresh',0.3,@isnumeric);
+p.addParameter('scrubThresh',0.3,@isnumeric); % set to 0 or Inf to disable
 p.addParameter('scrubBefore',0,@isnumeric);
 p.addParameter('scrubAfter',1,@isnumeric);
 % misc 
