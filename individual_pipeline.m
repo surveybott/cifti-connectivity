@@ -2,7 +2,7 @@
 % compute gradients - https://brainspace.readthedocs.io/en/latest/
 %
 % also uses https://github.com/Washington-University/cifti-matlab
-function out = individual_gradient(cifti,varargin)
+function out = individual_pipeline(cifti,varargin)
 % handle inputs
 p = inputParser;
 p.addParameter('parc','schaefer');
@@ -174,6 +174,7 @@ for i=1:numel(vols)
     end
 end
 % outputs
+out.inputs = inputs;
 out.cifti = cifti;
 out.scrub = scrubTs;
 out.fd = fd

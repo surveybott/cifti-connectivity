@@ -11,7 +11,7 @@
 %
 % SurveyBott 2020
 
-function sub = gradient_pipeline(varargin)
+function sub = group_pipeline(varargin)
 % setup inputs
 p = inputParser;
 p.addParameter('dataDir','/scratch/st-tv01-1/hbn/bids/derivatives',@isfolder);
@@ -57,6 +57,12 @@ endings = {'desc-confounds_timeseries.tsv','desc-MELODIC_mixing.tsv','AROMAnoise
 names = {'confounds','melodic','aroma'};
 rm = false(size(cifti));
 for i=1:numel(cifti)
+    if isfield(cifti,'sub') && isnumeric(cifti(i).sub)
+        cifti(i).sub = num2str(cifti(i).sub);
+    end
+    if isfield(cifti,'ses') && isnumeric(cifti(i).ses)
+        cifti(i).ses = num2str(cifti(i).ses);
+    end
     prefix = strsplit(cifti(i).name,'_space');
     cifti(i).prefix = prefix{1};
     for j=1:numel(endings)
@@ -90,26 +96,47 @@ if ~isempty(inputs.outDir) && ~isfolder(inputs.outDir)
     mkdir(inputs.outDir);
 end
 parfor i=1:numel(sub)
-    fprintf('\t%d/%d\tsub-%s\n',i,numel(sub),sub{i});
-    % run (and save)
-    try
-        out = individual_gradient(cifti(ismember({cifti.sub},sub{i})),'icaAroma',inputs.icaAroma,'confounds',inputs.confounds,'bandpass',inputs.bandpass,...
+    fprintf('%d/%d\tsub-%s',i,numel(sub),sub{i});
+    sub_cifti = cifti(ismember({cifti.sub},sub{i}));
+    if isfield(sub_cifti, 'ses')
+        % loop over sessions
+        sub_ses = unique({sub_cifti.ses});
+        for j=1:numel(sub_ses)
+            fprintf('\n\t\ttses-%s',sub_ses{j});
+            sub_ses_cifti = sub_cifti(ismember({sub_cifti.ses},sub_ses{j}));
+            try
+                run_indiv(sub_ses_cifti, inputs);
+            catch
+                fprintf('\tERROR');
+            end
+        end
+    else
+        try
+            run_indiv(sub_cifti, inputs);
+        catch
+            fprintf('\tERROR');
+        end
+    end
+    fprintf('\n');
+end
+
+end
+
+function out = run_indiv(cifti, inputs)
+% run
+out = individual_pipeline(cifti,'icaAroma',inputs.icaAroma,'confounds',inputs.confounds,'bandpass',inputs.bandpass,...
             'scrubThresh',inputs.scrubThresh,'scrubBefore',inputs.scrubBefore,'scrubAfter',inputs.scrubAfter,...
             'parc',inputs.parc,'res',inputs.res,'gradient',inputs.gradient,'increment',inputs.increment);
-        if ~isempty(inputs.outDir) && inputs.saveIndiv
-            filename = fullfile(inputs.outDir,sprintf('%s%s.mat',sub{i},inputs.outSuffix));
-            save_gradient(out,filename,inputs.saveConn);
-        end
-    catch
-        fprintf('ERROR\t%s\n',sub{i});
+% save
+if ~isempty(inputs.outDir) && inputs.saveIndiv
+    if isfield(cifti,'ses')
+        filename = fullfile(inputs.outDir, sprintf('sub-%s_ses-%s%s.mat',cifti(1).sub,cifti(1).ses,inputs.outSuffix));
+    else
+        filename = fullfile(inputs.outDir, sprintf('sub-%s%s.mat',cifti(1).sub,inputs.outSuffix));
     end
+    if ~inputs.saveConn
+        out.conn = [];
+    end
+    save(filename,'out');
 end
-
-end
-
-function save_gradient(out,filename,saveConn)
-if ~saveConn
-   out.conn = [];
-end
-save(filename,'out');
 end
